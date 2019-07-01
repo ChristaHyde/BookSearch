@@ -5,14 +5,42 @@ import DeleteBtn from "../components/DeleteBtn";
 import { Col, Row, Container } from "../components/Grid";
 import { List, ListItem } from "../components/List";
 import { Input, TextArea, FormBtn } from "../components/Form";
+import axios from "axios";
 
 class Books extends Component {
   state = {
-    books: []
+    books: [],
+    title: null,
+    author: null,
+    synopsis: null
   };
 
   componentDidMount() {
     this.loadBooks();
+  }
+
+  handleChange = event => {
+    event.preventDefault();
+    this.setState({
+      [event.target.name]: event.target.value
+    })
+    // console.log(event.target.value);
+    // console.log(event.target.name);
+    // console.log(this.state);
+  }
+
+  handleClick = event => {
+    event.preventDefault();
+    console.log("task");
+    axios({
+      method: 'post',
+      url: '/api/books',
+      data: this.state
+    })
+      .then(function (response) {
+        console.log(response);
+      });
+
   }
 
   loadBooks = () => {
@@ -30,10 +58,10 @@ class Books extends Component {
               <h1>What Books Should I Read?</h1>
             </Jumbotron>
             <form>
-              <Input name="title" placeholder="Title (required)" />
-              <Input name="author" placeholder="Author (required)" />
-              <TextArea name="synopsis" placeholder="Synopsis (Optional)" />
-              <FormBtn>Submit Book</FormBtn>
+              <Input handlechange={this.handleChange} name="title" placeholder="Title (required)" />
+              <Input handlechange={this.handleChange} name="author" placeholder="Author (required)" />
+              <TextArea handlechange={this.handleChange} name="synopsis" placeholder="Synopsis (Optional)" />
+              <FormBtn handleclick={this.handleClick}>Submit Book</FormBtn>
             </form>
           </Col>
           <Col size="md-6 sm-12">
@@ -54,8 +82,8 @@ class Books extends Component {
                 ))}
               </List>
             ) : (
-              <h3>No Results to Display</h3>
-            )}
+                <h3>No Results to Display</h3>
+              )}
           </Col>
         </Row>
       </Container>
@@ -64,3 +92,6 @@ class Books extends Component {
 }
 
 export default Books;
+
+
+
