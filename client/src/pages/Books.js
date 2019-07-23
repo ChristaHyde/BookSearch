@@ -29,7 +29,7 @@ class Books extends Component {
     // console.log(this.state);
   }
 
-  handleClick = event => {
+  handleAdd = event => {
     event.preventDefault();
     console.log("task");
     axios({
@@ -37,8 +37,23 @@ class Books extends Component {
       url: '/api/books',
       data: this.state
     })
-      .then(function (response) {
+      .then((response) => {
         console.log(response);
+        this.loadBooks();
+      });
+
+  }
+
+  handleDelete = event => {
+    var bookId = event.target.getAttribute('data-book-id');
+    event.preventDefault();
+    axios({
+      method: 'delete',
+      url: '/api/books/' + bookId
+    })
+      .then((response) => {
+        console.log(response);
+        this.loadBooks();
       });
 
   }
@@ -61,7 +76,7 @@ class Books extends Component {
               <Input handlechange={this.handleChange} name="title" placeholder="Title (required)" />
               <Input handlechange={this.handleChange} name="author" placeholder="Author (required)" />
               <TextArea handlechange={this.handleChange} name="synopsis" placeholder="Synopsis (Optional)" />
-              <FormBtn handleclick={this.handleClick}>Submit Book</FormBtn>
+              <FormBtn handleclick={this.handleAdd}>Submit Book</FormBtn>
             </form>
           </Col>
           <Col size="md-6 sm-12">
@@ -77,7 +92,7 @@ class Books extends Component {
                         {book.title} by {book.author}
                       </strong>
                     </a>
-                    <DeleteBtn />
+                    <DeleteBtn data-book-id={book._id} onClick={this.handleDelete} />
                   </ListItem>
                 ))}
               </List>
